@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const FALLBACK_DESCRIPTIONS = {
     'LG라ㄹ면': '구단 감성 듬뿍,\n칼칼하고 시원한 라면 한 그릇',
     '라팍 김치말이국수': '라팍표 김치육수에 쫄깃한 면,\n시원함이 한가득',
-    '두산 B볶rs': '두산의 힘!\n불향 가득한 든든 볶음밥',
     '키움쫄?쫄면': '매콤새콤, 쫄깃함으로\n기세를 키우는 쫄면',
     '롯데 자이언츠 화채': '달콤 상큼, 자이언츠처럼\n시원하게 즐기는 과일 화채',
     'KT란찜': '위즈가 낳은 계란,\n쪄서 먹었더니 홈런 각',
@@ -48,12 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     '물': '/images/water.png'
   };
 
-  // 볶음밥 품절 강제 처리(백엔드 연동 전 임시 정책)
-  function isFriedRiceMenu(name) {
-    const n = String(name || '');
-    // 일반적인 한글 표기 및 변형(띄어쓰기/오타)과 기존 메뉴명 변형까지 포괄
-    return /볶.?음?밥/.test(n) || /볶밥/.test(n) || /B볶/i.test(n);
-  }
 
   // -----------------------------
   // 알림 유틸 (최초 +1 때 1회만 안내)

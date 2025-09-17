@@ -5,7 +5,6 @@ const PRODUCTS = {
   3:  { name: 'KIA 호랑이 생고기',       price: 21900 },
   4:  { name: 'LG라면',                 price: 5900  },
   5:  { name: '라팍 김치말이국수',       price: 7900  },
-  6:  { name: '두산 B볶음s',            price: 8900  },
   7:  { name: '키움쫄?쫄면',            price: 5900  },
   8:  { name: '롯데 자이언츠 화채',      price: 6900  },
   9:  { name: 'KT랍찜',                 price: 3900  }, 
@@ -485,36 +484,43 @@ app.get('/menu/admin', (req, res) => {
   });
 });
 
-// (공용) 인기 메뉴 Top N
+// (공용) 인기 메뉴 Top N - 고정 순위
 app.get('/menu/top', (req, res) => {
   const count = parseInt(req.query.count) || 3;
   
-  // 메뉴별 랜덤 판매 데이터 생성
-  const menuStats = Object.entries(PRICE_TABLE).map((item, index) => ({
-    id: index + 1,
-    name: item[0],
-    price: item[1],
-    image_url: null,
-    description: `맛있는 ${item[0]}`,
-    qty_sold: Math.floor(Math.random() * 20) + 5, // 5-24개 판매
-    amount_sold: 0 // 아래에서 계산
-  }));
-
-  // 매출 계산
-  menuStats.forEach(item => {
-    item.amount_sold = item.qty_sold * item.price;
-  });
-
-  // 정렬: 판매수량 내림차순 → 매출합계 내림차순
-  menuStats.sort((a, b) => {
-    if (b.qty_sold !== a.qty_sold) {
-      return b.qty_sold - a.qty_sold;
+  // 고정 인기 메뉴 순위
+  const fixedTopMenus = [
+    {
+      id: 1,
+      name: 'SSG 문학철판구이(400g)',
+      price: 25900,
+      image_url: null,
+      description: '맛있는 SSG 문학철판구이(400g)',
+      qty_sold: 50,
+      amount_sold: 1295000
+    },
+    {
+      id: 2,
+      name: 'NC 빙하기공룡고기(400g)',
+      price: 19900,
+      image_url: null,
+      description: '맛있는 NC 빙하기공룡고기(400g)',
+      qty_sold: 45,
+      amount_sold: 895500
+    },
+    {
+      id: 17,
+      name: '한화e글스-ㅔ트',
+      price: 149000,
+      image_url: null,
+      description: '맛있는 한화e글스-ㅔ트',
+      qty_sold: 30,
+      amount_sold: 4470000
     }
-    return b.amount_sold - a.amount_sold;
-  });
+  ];
 
   // 상위 N개만 반환
-  const topMenus = menuStats.slice(0, count);
+  const topMenus = fixedTopMenus.slice(0, count);
 
   res.json({
     success: true,
