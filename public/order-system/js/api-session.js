@@ -458,24 +458,83 @@ export async function createOrder(order, slug) {
 //   return data;
 // }
 
+// export async function getPublicMenu() {
+//   await waitForRuntime();
+//   const url = apiUrl('/menu');
+//   const res = await fetch(url, { method:'GET', headers:{ 'Content-Type':'application/json','Accept':'application/json' } });
+//   const text = await res.text(); let data={}; try{ data = JSON.parse(text) } catch(e){}
+//   console.log('[getPublicMenu]', url, res.status, text);
+//   if (!res.ok || !data?.success) throw new Error(data?.message || '메뉴 조회 실패');
+//   return data?.data || [];
+// }
+
 export async function getPublicMenu() {
   await waitForRuntime();
   const url = apiUrl('/menu');
-  const res = await fetch(url, { method:'GET', headers:{ 'Content-Type':'application/json','Accept':'application/json' } });
-  const text = await res.text(); let data={}; try{ data = JSON.parse(text) } catch(e){}
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  });
+
+  const text = await res.text();
+  let data = {};
+  try { data = JSON.parse(text); } catch(e){}
+
   console.log('[getPublicMenu]', url, res.status, text);
+
   if (!res.ok || !data?.success) throw new Error(data?.message || '메뉴 조회 실패');
-  return data?.data || [];
+
+  // 블랙리스트 필터 추가
+  const BLACKLIST = new Set(['두산 B볶rs']);
+  const menus = (data?.data || []).filter(item => !BLACKLIST.has(item.name));
+
+  return menus;
 }
 
-export async function getTopMenu(count=3) {
-  await waitForRuntime();
-  const url = apiUrl('/menu/top', { count });
-  const res = await fetch(url, { method:'GET', headers:{ 'Content-Type':'application/json','Accept':'application/json' } });
-  const text = await res.text(); let data={}; try{ data = JSON.parse(text) } catch(e){}
-  console.log('[getTopMenu]', url, res.status, text);
-  if (!res.ok || !data?.success) throw new Error(data?.message || '인기 메뉴 조회 실패');
-  return data?.data || [];
+// export async function getTopMenu(count=3) {
+//   await waitForRuntime();
+//   const url = apiUrl('/menu/top', { count });
+//   const res = await fetch(url, { method:'GET', headers:{ 'Content-Type':'application/json','Accept':'application/json' } });
+//   const text = await res.text(); let data={}; try{ data = JSON.parse(text) } catch(e){}
+//   console.log('[getTopMenu]', url, res.status, text);
+//   if (!res.ok || !data?.success) throw new Error(data?.message || '인기 메뉴 조회 실패');
+//   return data?.data || [];
+// }
+
+export async function getTopMenu(count = 3) {
+  const fixedTopMenus = [
+    {
+      id: 1,
+      name: 'SSG 문학철판구이(400g)',
+      price: 25900,
+      image_url: null,
+      description: '맛있는 SSG 문학철판구이(400g)',
+      qty_sold: 280,
+      amount_sold: 1295000
+    },
+    {
+      id: 2,
+      name: 'NC 빙하기공룡고기(400g)',
+      price: 19900,
+      image_url: null,
+      description: '맛있는 NC 빙하기공룡고기(400g)',
+      qty_sold: 145,
+      amount_sold: 895500
+    },
+    {
+      id: 17,
+      name: '한화e글스-ㅔ트',
+      price: 149000,
+      image_url: null,
+      description: '맛있는 한화e글스-ㅔ트',
+      qty_sold: 30,
+      amount_sold: 4470000
+    }
+  ];
+  return fixedTopMenus.slice(0, count);
 }
 
 /* -----------------------------
